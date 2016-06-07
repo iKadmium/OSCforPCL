@@ -1,4 +1,4 @@
-﻿namespace OSCforPCL
+﻿namespace OSCforPCL.Values
 {
     public interface IOSCValue
     {

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using OSCforPCL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Net;
-using System.Linq;
 
-namespace OSCforPCL
+namespace Tester
 {
     public class Program
     {
@@ -19,10 +21,9 @@ namespace OSCforPCL
 
             OSCPacket newMessage = OSCPacket.Parse(message.Bytes);
 
-            List<OSCMessage> messages = new List<OSCMessage>();
             OSCBundle bundle = new OSCBundle(message);
 
-            OSCPacket newBundleMessage = OSCPacket.Parse(bundle.Bytes);
+            OSCPacket parsed = OSCPacket.Parse(bundle.Bytes);
 
             Socket client = new Socket(SocketType.Dgram, ProtocolType.Udp);
             EndPoint endPoint = new IPEndPoint(IPAddress.Loopback, port);

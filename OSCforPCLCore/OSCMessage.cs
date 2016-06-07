@@ -1,14 +1,15 @@
-﻿using System;
+﻿using OSCforPCL.Values;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace OSCforPCL
 {
-    public class OSCMessage : IOSCBundleContent
+    public class OSCMessage : OSCPacket
     {
         public OSCString Address { get; set; }
         public List<IOSCValue> Arguments { get; set; }
-        public byte[] Bytes { get; }
+        public override byte[] Bytes { get; }
 
         public OSCMessage(string address, params object[] values)
         {
@@ -19,6 +20,13 @@ namespace OSCforPCL
                 IOSCValue value = Wrap(obj);
                 Arguments.Add(value);
             }
+            Bytes = GetBytes();
+        }
+
+        public OSCMessage(string address, IEnumerable<IOSCValue> values)
+        {
+            Address = new OSCString(address);
+            Arguments = new List<IOSCValue>(values);
             Bytes = GetBytes();
         }
 
@@ -91,6 +99,51 @@ namespace OSCforPCL
                 length += value.Bytes.Length;
             }
             return length;
+        }
+
+        public static new OSCMessage Parse(ArraySegment<byte> bytes)
+        {
+            OSCString address = OSCString.Parse(bytes);
+            bytes = new ArraySegment<byte>(bytes.Array, bytes.Offset + address.Bytes.Length, bytes.Count - address.Bytes.Length);
+            OSCString typeTags = OSCString.Parse(bytes);
+            bytes = new ArraySegment<byte>(bytes.Array, bytes.Offset + typeTags.Bytes.Length, bytes.Count - typeTags.Bytes.Length);
+
+            int valueCount = typeTags.Contents.Length - 1;
+            List<IOSCValue> values = new List<IOSCValue>();
+
+            foreach(char current in typeTags.Contents.Substring(1))
+            {
+                IOSCValue value;
+                switch (current)
+                {
+                    case 'b':
+                        //blob
+                        value = OSCBlob.Parse(bytes);
+                        break;
+                    case 'f':
+                        //float
+                        value = OSCFloat.Parse(bytes);
+                        break;
+                    case 'i':
+                        //int
+                        value = OSCInt.Parse(bytes);
+                        break;
+                    case 's':
+                        //string
+                        value = OSCString.Parse(bytes);
+                        break;
+                    case 't':
+                        value = OSCTimeTag.Parse(bytes);
+                        break;
+                    default:
+                        throw new ArgumentException("No such type tag as " + current);
+                }
+
+                values.Add(value);
+                bytes = new ArraySegment<byte>(bytes.Array, bytes.Offset + value.Bytes.Length, bytes.Count - value.Bytes.Length);
+            }
+
+            return new OSCMessage(address.Contents, values);
         }
     }
 }

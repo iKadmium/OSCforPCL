@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OSCforPCLCore", "OSCforPCLCore\OSCforPCLCore.xproj", "{4F8792B5-B916-4C87-A548-C78236F13709}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OSCforPCL", "OSCforPCLCore\OSCforPCL.xproj", "{4F8792B5-B916-4C87-A548-C78236F13709}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tester", "Tester\Tester.xproj", "{438D5FF7-65F9-48A7-8425-4C5CE1994B55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4F8792B5-B916-4C87-A548-C78236F13709}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F8792B5-B916-4C87-A548-C78236F13709}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F8792B5-B916-4C87-A548-C78236F13709}.Release|Any CPU.Build.0 = Release|Any CPU
+		{438D5FF7-65F9-48A7-8425-4C5CE1994B55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{438D5FF7-65F9-48A7-8425-4C5CE1994B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{438D5FF7-65F9-48A7-8425-4C5CE1994B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{438D5FF7-65F9-48A7-8425-4C5CE1994B55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

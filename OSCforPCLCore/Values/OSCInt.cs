@@ -1,6 +1,8 @@
-﻿using System;
+﻿using OSCforPCL.Values;
+using System;
+using System.IO;
 
-namespace OSCforPCL
+namespace OSCforPCL.Values
 {
     internal class OSCInt : IOSCValue<int>
     {
@@ -27,6 +29,18 @@ namespace OSCforPCL
                 Array.Reverse(bytes);
             }
             return bytes;
+        }
+
+        public static OSCInt Parse(ArraySegment<byte> bytes)
+        {
+            byte[] intBytes = new byte[sizeof(Int32)];
+            Array.Copy(bytes.Array, bytes.Offset, intBytes, 0, sizeof(Int32));
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(intBytes);
+            }
+            int value = BitConverter.ToInt32(intBytes, 0);
+            return new OSCInt(value);
         }
     }
 }

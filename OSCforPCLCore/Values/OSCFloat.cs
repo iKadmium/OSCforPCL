@@ -1,6 +1,8 @@
-﻿using System;
+﻿using OSCforPCL.Values;
+using System;
+using System.IO;
 
-namespace OSCforPCL
+namespace OSCforPCL.Values
 {
     public class OSCFloat : IOSCValue<float>
     {
@@ -22,6 +24,18 @@ namespace OSCforPCL
                 Array.Reverse(bytes);
             }
             return bytes;
+        }
+
+        public static OSCFloat Parse(ArraySegment<byte> bytes)
+        {
+            byte[] floatBytes = new byte[sizeof(float)];
+            Array.Copy(bytes.Array, bytes.Offset, floatBytes, 0, sizeof(float));
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(floatBytes);
+            }
+            float value = BitConverter.ToSingle(floatBytes, 0);
+            return new OSCFloat(value);
         }
 
         public int GetByteLength()

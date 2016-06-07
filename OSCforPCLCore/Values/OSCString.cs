@@ -1,6 +1,9 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Linq;
 
-namespace OSCforPCL
+namespace OSCforPCL.Values
 {
     public class OSCString : IOSCValue<string>
     {
@@ -37,6 +40,14 @@ namespace OSCforPCL
                 paddingRequired = 0;
             }
             return terminatedLength + paddingRequired;
+        }
+
+        public static OSCString Parse(ArraySegment<byte> bytes)
+        {
+            var goodChars = bytes.TakeWhile(x => x != 0);
+            StringBuilder builder = new StringBuilder();
+            string str = Encoding.ASCII.GetString(bytes.Array, bytes.Offset, goodChars.Count());
+            return new OSCString(str);
         }
     }
 }

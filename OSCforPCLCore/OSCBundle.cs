@@ -6,17 +6,17 @@ using System.Linq;
 
 namespace OSCforPCL
 {
-    public class OSCBundle : IOSCBundleContent
+    public class OSCBundle : OSCPacket
     {
         private const int BUNDLE_STRING_SIZE = 8;
         private const int TIME_TAG_SIZE = 8;
         private const int MESSAGE_SIZE_SIZE = 4;
 
         public OSCTimeTag TimeTag { get; }
-        public IEnumerable<IOSCBundleContent> Contents { get; }
-        public byte[] Bytes { get; }
+        public IEnumerable<OSCPacket> Contents { get; }
+        public override byte[] Bytes { get; }
 
-        public OSCBundle(IEnumerable<IOSCBundleContent> contents)
+        public OSCBundle(IEnumerable<OSCPacket> contents)
         {
             Contents = contents;
 
@@ -27,14 +27,14 @@ namespace OSCforPCL
             OSCTimeTag timeTag = new OSCTimeTag(DateTime.Now);
             stream.Write(timeTag.Bytes, 0, timeTag.Bytes.Length);
 
-            foreach (IOSCBundleContent message in contents)
+            foreach (OSCPacket message in contents)
             {
                 stream.Write(OSCInt.GetBigEndianIntBytes(message.Bytes.Length), 0, sizeof(int));
                 stream.Write(message.Bytes, 0, message.Bytes.Length);
             }
         }
 
-        public OSCBundle(params IOSCBundleContent[] contents) : this(contents as IEnumerable<IOSCBundleContent>)
+        public OSCBundle(params OSCPacket[] contents) : this(contents as IEnumerable<OSCPacket>)
         { }
 
         private int GetByteLength()
@@ -49,11 +49,31 @@ namespace OSCforPCL
         private int GetMessagesBytesLength()
         {
             int length = 0;
-            foreach(IOSCBundleContent message in Contents)
+            foreach(OSCPacket message in Contents)
             {
                 length += message.Bytes.Length;
             }
             return length;
+        }
+
+        public static new OSCBundle Parse(ArraySegment<byte> bytes)
+        {
+            OSCString bundleString = OSCString.Parse(bytes);
+            bytes = new ArraySegment<byte>(bytes.Array, bytes.Offset + bundleString.Bytes.Length, bytes.Count - bundleString.Bytes.Length);
+
+            OSCTimeTag timeTag = OSCTimeTag.Parse(bytes);
+            bytes = new ArraySegment<byte>(bytes.Array, bytes.Offset + timeTag.Bytes.Length, bytes.Count - timeTag.Bytes.Length);
+
+            List<OSCPacket> contents = new List<OSCPacket>();
+            while (bytes.Count > 0)
+            {
+                OSCInt size = OSCInt.Parse(bytes);
+                bytes = new ArraySegment<byte>(bytes.Array, bytes.Offset + size.Bytes.Length, bytes.Count - size.Bytes.Length);
+                OSCPacket packet = OSCPacket.Parse(bytes);
+                bytes = new ArraySegment<byte>(bytes.Array, bytes.Offset + packet.Bytes.Length, bytes.Count - packet.Bytes.Length);
+            }
+            
+            return new OSCBundle();
         }
     }
 }
