@@ -26,10 +26,6 @@ namespace OSCforPCL.Values
         {
             return "False";
         }
-
-        public static OSCFalse Parse(BinaryReader reader)
-        {
-            return new OSCFalse();
-        }
+        
     }
 }

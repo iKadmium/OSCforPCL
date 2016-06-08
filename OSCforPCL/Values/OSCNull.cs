@@ -25,10 +25,6 @@ namespace OSCforPCL.Values
         {
             return "Null";
         }
-
-        public static OSCNull Parse(BinaryReader reader)
-        {
-            return new OSCNull();
-        }
+        
     }
 }

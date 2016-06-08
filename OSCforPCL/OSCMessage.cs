@@ -94,31 +94,7 @@ namespace OSCforPCL
 
             foreach(char current in typeTags.Contents.Substring(1))
             {
-                IOSCValue value;
-                switch (current)
-                {
-                    case 'b':
-                        //blob
-                        value = OSCBlob.Parse(reader);
-                        break;
-                    case 'f':
-                        //float
-                        value = OSCFloat.Parse(reader);
-                        break;
-                    case 'i':
-                        //int
-                        value = OSCInt.Parse(reader);
-                        break;
-                    case 's':
-                        //string
-                        value = OSCString.Parse(reader);
-                        break;
-                    case 't':
-                        value = OSCTimeTag.Parse(reader);
-                        break;
-                    default:
-                        throw new ArgumentException("No such type tag as " + current);
-                }
+                IOSCValue value = OSCValue.Parse(current, reader);
 
                 values.Add(value);
             }
