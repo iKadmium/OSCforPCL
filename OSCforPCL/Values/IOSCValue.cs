@@ -4,6 +4,7 @@
     {
         char TypeTag { get; }
         byte[] Bytes { get; }
+        object GetValue();
     }
 
     public interface IOSCValue<T> : IOSCValue

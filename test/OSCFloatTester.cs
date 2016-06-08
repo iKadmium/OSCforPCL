@@ -19,11 +19,7 @@ namespace test
         [Theory]
         public void TestParse(float value)
         {
-            OSCFloat oscFloat = new OSCFloat(value);
-            byte[] bytes = oscFloat.Bytes;
-
-            OSCFloat parsed = OSCFloat.Parse(new BinaryReader(new MemoryStream(bytes)));
-            Assert.Equal(value, parsed.Contents);
+            Assert.Equal(value, OSCValueTester.TestOSCValueParser(value, (reader) => OSCFloat.Parse(reader)));
         }
     }
 }

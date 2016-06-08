@@ -4,7 +4,7 @@ using System.IO;
 
 namespace OSCforPCL.Values
 {
-    class OSCBlob : IOSCValue<byte[]>
+    public class OSCBlob : IOSCValue<byte[]>
     {
         public static int PaddingLength = 4;
 
@@ -43,6 +43,16 @@ namespace OSCforPCL.Values
             int terminatedLength = length + 1;
             int paddingRequired = PaddingLength - (terminatedLength % PaddingLength);
             return length + paddingRequired;
+        }
+
+        public object GetValue()
+        {
+            return Contents;
+        }
+
+        public override string ToString()
+        {
+            return Contents.ToString();
         }
     }
 }

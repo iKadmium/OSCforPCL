@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Net;
 using System.Linq;
+using System;
 
 namespace OSCforPCL
 {
@@ -10,25 +11,32 @@ namespace OSCforPCL
     {
         public static void Main(string[] args)
         {
-            string host = "localhost";
-            int port = 8006;
-            string address = "/tempo/raw";
-            float value = 121.3f;
+            OSCServer server = new OSCServer(9000);
+            server.DefaultOnMessageReceived += Server_OnMessageReceived;
+            server.AddressOnMessageReceived.Add("/arsehole", (sender, messageArgs) =>
+            {
+                Console.Out.WriteLine("special " + messageArgs.Message);
+            });
+            OSCClient client = new OSCClient("127.0.0.1", 9000);
+            OSCBundle bundle = new OSCBundle(DateTime.Now + TimeSpan.FromSeconds(3), new OSCMessage("/arsehole", "Sent " + DateTime.Now));
+            client.Send(bundle);
+            while (true)
+            {
 
-            OSCMessage message = new OSCMessage(address, value);
-            OSCPacket newMessage = OSCPacket.Parse(message.Bytes);
-
-            List<OSCMessage> messages = new List<OSCMessage>();
-            OSCBundle bundle = new OSCBundle(message);
-
-            OSCPacket newBundleMessage = OSCPacket.Parse(bundle.Bytes);
-
-            Socket client = new Socket(SocketType.Dgram, ProtocolType.Udp);
-            EndPoint endPoint = new IPEndPoint(IPAddress.Loopback, port);
-            SocketAsyncEventArgs eventArgs = new SocketAsyncEventArgs();
-            eventArgs.SetBuffer(bundle.Bytes, 0, bundle.Bytes.Length);
-            eventArgs.RemoteEndPoint = endPoint;
-            client.SendToAsync(eventArgs);
+            }
         }
+
+        private static void Server_OnMessageReceived(object sender, OSCMessageReceivedArgs e)
+        {
+            OSCMessage message = e.Message;
+            PrintMessage(message);
+        }
+        
+
+        private static void PrintMessage(OSCMessage message)
+        {
+            Console.Out.WriteLine(message.ToString());
+        }
+        
     }
 }

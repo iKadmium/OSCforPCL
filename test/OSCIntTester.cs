@@ -16,11 +16,7 @@ namespace test
         [Theory]
         public void TestParsing(Int32 value)
         {
-            OSCInt oscInt = new OSCInt(value);
-            byte[] bytes = oscInt.Bytes;
-
-            OSCInt parsed = OSCInt.Parse(new BinaryReader(new MemoryStream(bytes)));
-            Assert.Equal(parsed.Contents, value);
+            Assert.Equal(value, OSCValueTester.TestOSCValueParser(value, (reader) => OSCInt.Parse(reader)));
         }
     }
 }

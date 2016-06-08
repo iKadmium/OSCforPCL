@@ -54,5 +54,15 @@ namespace OSCforPCL.Values
             
             return new OSCTimeTag(time);
         }
+
+        public object GetValue()
+        {
+            return Contents;
+        }
+
+        public override string ToString()
+        {
+            return Contents.ToString();
+        }
     }
 }

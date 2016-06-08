@@ -10,7 +10,11 @@ namespace OSCforPCL.Values
     {
         public static IOSCValue Wrap(object obj)
         {
-            if (obj.GetType() == typeof(byte[]))
+            if(obj == null)
+            {
+                return new OSCNull();
+            }
+            else if (obj.GetType() == typeof(byte[]))
             {
                 return new OSCBlob(obj as byte[]);
             }
@@ -25,6 +29,22 @@ namespace OSCforPCL.Values
             else if (obj.GetType() == typeof(float))
             {
                 return new OSCFloat((float)obj);
+            }
+            else if(obj.GetType() == typeof(DateTime))
+            {
+                return new OSCTimeTag((DateTime)obj);
+            }
+            else if(obj.GetType() == typeof(bool))
+            {
+                bool value = (bool)obj;
+                if(value)
+                {
+                    return new OSCTrue();
+                }
+                else
+                {
+                    return new OSCFalse();
+                }
             }
             else
             {

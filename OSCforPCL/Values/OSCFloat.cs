@@ -42,5 +42,15 @@ namespace OSCforPCL.Values
         {
             return sizeof(float);
         }
+
+        public object GetValue()
+        {
+            return Contents;
+        }
+
+        public override string ToString()
+        {
+            return Contents.ToString();
+        }
     }
 }

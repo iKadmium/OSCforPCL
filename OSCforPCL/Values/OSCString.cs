@@ -35,12 +35,8 @@ namespace OSCforPCL.Values
         public static int GetPaddedLength(int length)
         {
             int terminatedLength = length + 1;
-            int paddingRequired = PaddingLength - (terminatedLength % PaddingLength);
-            if(paddingRequired == PaddingLength)
-            {
-                paddingRequired = 0;
-            }
-            return terminatedLength + paddingRequired;
+            int paddedLength = (int)(Math.Ceiling(terminatedLength / (float)PaddingLength) * 4);
+            return paddedLength;
         }
 
         public static OSCString Parse(BinaryReader reader)
@@ -60,6 +56,16 @@ namespace OSCforPCL.Values
                 reader.ReadByte();
             }
             return oscString;
+        }
+
+        public object GetValue()
+        {
+            return Contents;
+        }
+
+        public override string ToString()
+        {
+            return Contents;
         }
     }
 }

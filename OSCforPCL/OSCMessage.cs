@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace OSCforPCL
 {
@@ -17,8 +18,14 @@ namespace OSCforPCL
             Arguments = new List<IOSCValue>();
             foreach (object obj in values)
             {
-                IOSCValue value = OSCValue.Wrap(obj);
-                Arguments.Add(value);
+                if(obj is IOSCValue)
+                {
+                    Arguments.Add(obj as IOSCValue);
+                }
+                else
+                {
+                    Arguments.Add(OSCValue.Wrap(obj));
+                }
             }
             Bytes = GetBytes();
         }
@@ -117,6 +124,19 @@ namespace OSCforPCL
             }
 
             return new OSCMessage(address.Contents, values);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(Address.ToString());
+            builder.Append(" ");
+            foreach(IOSCValue value in Arguments)
+            {
+                builder.Append(value.GetValue());
+                builder.Append(" ");
+            }
+            return builder.ToString();
         }
     }
 }

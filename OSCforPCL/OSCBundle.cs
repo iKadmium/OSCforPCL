@@ -13,19 +13,19 @@ namespace OSCforPCL
         private const int MESSAGE_SIZE_SIZE = 4;
 
         public OSCTimeTag TimeTag { get; }
-        public IEnumerable<OSCPacket> Contents { get; }
+        public List<OSCPacket> Contents { get; }
         public override byte[] Bytes { get; }
 
-        public OSCBundle(IEnumerable<OSCPacket> contents)
+        public OSCBundle(DateTime time, IEnumerable<OSCPacket> contents)
         {
-            Contents = contents;
+            Contents = new List<OSCPacket>(contents);
 
             Bytes = new byte[GetByteLength()];
             MemoryStream stream = new MemoryStream(Bytes);
             OSCString bundleString = new OSCString("#bundle");
             stream.Write(bundleString.Bytes, 0, bundleString.Bytes.Length);
-            OSCTimeTag timeTag = new OSCTimeTag(DateTime.Now);
-            stream.Write(timeTag.Bytes, 0, timeTag.Bytes.Length);
+            TimeTag = new OSCTimeTag(time);
+            stream.Write(TimeTag.Bytes, 0, TimeTag.Bytes.Length);
 
             foreach (OSCPacket message in contents)
             {
@@ -34,7 +34,10 @@ namespace OSCforPCL
             }
         }
 
-        public OSCBundle(params OSCPacket[] contents) : this(contents as IEnumerable<OSCPacket>)
+        public OSCBundle(DateTime time, params OSCPacket[] contents) : this(time, contents as IEnumerable<OSCPacket>)
+        { }
+
+        public OSCBundle(params OSCPacket[] contents) : this(DateTime.Now, contents as IEnumerable<OSCPacket>)
         { }
 
         private int GetByteLength()
@@ -66,9 +69,10 @@ namespace OSCforPCL
             {
                 OSCInt size = OSCInt.Parse(reader);
                 OSCPacket packet = OSCPacket.Parse(reader);
+                contents.Add(packet);
             }
             
-            return new OSCBundle();
+            return new OSCBundle(timeTag.Contents, contents);
         }
     }
 }

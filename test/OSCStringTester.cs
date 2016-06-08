@@ -27,13 +27,9 @@ namespace test
         [InlineData("stuff")]
         [InlineData("a particularly long string")]
         [Theory]
-        public void TestParsing(string contents)
+        public void TestParsing(string value)
         {
-            OSCString str = new OSCString(contents);
-            byte[] bytes = str.Bytes;
-
-            OSCString testString = OSCString.Parse(new BinaryReader(new MemoryStream(bytes)));
-            Assert.Equal(contents, testString.Contents);
+            Assert.Equal(value, OSCValueTester.TestOSCValueParser(value, (reader) => OSCString.Parse(reader)));
         }
     }
 }

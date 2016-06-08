@@ -41,5 +41,15 @@ namespace OSCforPCL.Values
             int value = BitConverter.ToInt32(intBytes, 0);
             return new OSCInt(value);
         }
+
+        public object GetValue()
+        {
+            return Contents;
+        }
+
+        public override string ToString()
+        {
+            return Contents.ToString();
+        }
     }
 }
