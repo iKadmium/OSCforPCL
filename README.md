@@ -12,12 +12,32 @@ OSCBundle bundle = new OSCBundle(messageOne, messageTwo);
 ```
 In order to then send that to a network device:
 ```
-Socket client = new Socket(SocketType.Dgram, ProtocolType.Udp); //new UDP socket
-EndPoint endPoint = new IPEndPoint(IPAddress.Loopback, 8000); //send to localhost, port 8000
-SocketAsyncEventArgs eventArgs = new SocketAsyncEventArgs();
-eventArgs.RemoteEndPoint = endPoint;
-eventArgs.SetBuffer(bundle.Bytes, 0, bundle.Bytes.Length); //you can send a message or a bundle. To send a message, just use message.bytes
-client.SendToAsync(eventArgs);
+int port = 9000;
+string address = "127.0.0.1";
+OSCClient client = new OSCClient(address, port);
+client.Send(bundle);
 ```
-
-Parsing receiving bytes is still a work in progress.
+To listen for OSC messages:
+```
+int port = 9000;
+OSCServer server = new OSCServer(port);
+//listen to messages sent to a specific address
+string oscAddress = "/test";
+server.AddressOnMessageReceived.Add(specificAddress, (oscAddress, messageArgs) =>
+{
+  foreach(IOSCValue argument in messageArgs.Arguments)
+  {
+    //do something with the argument
+    object value = argument.GetValue();
+  }
+});
+//listen to messages sent to any address for which a handler is not already specified
+server.DefaultOnMessageReceived += (sender, messageArgs) =>
+{
+  foreach(IOSCValue argument in messageArgs.Arguments)
+  {
+    //do something with the argument
+    object value = argument.GetValue();
+  }
+};
+```
