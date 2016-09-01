@@ -1,5 +1,5 @@
 # OSCforPCL
-A relatively lightweight OSC library for PCL
+A relatively lightweight OSC library for .NET Core
 
 Usage is pretty simple - 
 ```csharp
