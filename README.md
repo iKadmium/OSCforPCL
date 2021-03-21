@@ -1,3 +1,6 @@
+# Archived
+This repo has been archived and will not be updated. See the new project, [kadmium-osc](https://github.com/iKadmium/kadmium-osc) for a more modern implementation.
+
 # OSCforPCL
 A relatively lightweight OSC library for .NET Core
 
